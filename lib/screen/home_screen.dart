@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/framework.dart';
 import 'package:flutter/src/widgets/placeholder.dart';
+import 'package:flutter/cupertino.dart';
 
-class HomeScreen extends StatefulWidget{
+class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
 
   @override
@@ -25,6 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
           children: [
             _DDay(
               onHeartPressed: onHeartPressed,
+              firstDay: firstDay,
             ),
             _CoupleImage(),
           ],
@@ -32,41 +34,81 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-  void onHeartPressed(){
-    print('클릭');
+
+  void onHeartPressed() {
+    showCupertinoDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Align(
+            alignment: Alignment.bottomCenter,
+            child: Container(
+              color: Colors.white,
+              height: 300,
+              child: CupertinoDatePicker(
+                //maximumDate:DateTime.now(),
+                mode: CupertinoDatePickerMode.date,
+                onDateTimeChanged: (DateTime date) {
+                  setState(() {
+                    firstDay = date;
+                  });
+                },
+              ),
+            ),
+          );
+        },
+        barrierDismissible: true);
   }
 }
 
 class _DDay extends StatelessWidget {
   final GestureTapCallback onHeartPressed;
+  final DateTime firstDay;
 
-  _DDay({required this.onHeartPressed});
+  _DDay({required this.onHeartPressed, required this.firstDay});
 
   @override
   Widget build(BuildContext context) {
     final textTheme = Theme.of(context).textTheme;
+    final now = DateTime.now();
 
     return Column(
       children: [
-        const SizedBox(height: 16.0,),
-        Text('U&I',
-        style: textTheme.headline1,),
-        const SizedBox(height: 16.0,),
-        Text('우리 처음 만난 날',
-        style: textTheme.bodyText1,),
-        Text('2021.11.23',
-        style: textTheme.bodyText2,),
-        const SizedBox(height: 16.0,),
+        const SizedBox(
+          height: 16.0,
+        ),
+        Text(
+          'U&I',
+          style: textTheme.headline1,
+        ),
+        const SizedBox(
+          height: 16.0,
+        ),
+        Text(
+          '우리 처음 만난 날',
+          style: textTheme.bodyText1,
+        ),
+        Text(
+          '${firstDay.year}.${firstDay.month}.${firstDay.day}',
+          style: textTheme.bodyText2,
+        ),
+        const SizedBox(
+          height: 16.0,
+        ),
         IconButton(
           onPressed: onHeartPressed,
           iconSize: 60.0,
-          icon: Icon(Icons.favorite,
-          color: Colors.red,
+          icon: Icon(
+            Icons.favorite,
+            color: Colors.red,
           ),
         ),
-        const SizedBox(height: 16.0,),
-        Text('D+365',
-        style: textTheme.headline2,),
+        const SizedBox(
+          height: 16.0,
+        ),
+        Text(
+          'D+${DateTime(now.year, now.month, now.day).difference(firstDay).inDays + 1}',
+          style: textTheme.headline2,
+        ),
       ],
     );
   }
@@ -74,11 +116,13 @@ class _DDay extends StatelessWidget {
 
 class _CoupleImage extends StatelessWidget {
   @override
-  Widget build(BuildContext context){
+  Widget build(BuildContext context) {
     return Expanded(
       child: Center(
-        child: Image.asset('asset/img/middle_image.png',
-        height: MediaQuery.of(context).size.height/2,),
+        child: Image.asset(
+          'asset/img/middle_image.png',
+          height: MediaQuery.of(context).size.height / 2,
+        ),
       ),
     );
   }

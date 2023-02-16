@@ -36,6 +36,9 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void onHeartPressed() {
+    DateTime now = DateTime.now();
+    DateTime maxDate = DateTime(now.year, now.month, now.day+1);
+
     showCupertinoDialog(
         context: context,
         builder: (BuildContext context) {
@@ -45,7 +48,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.white,
               height: 300,
               child: CupertinoDatePicker(
-                //maximumDate:DateTime.now(),
+                maximumDate:  maxDate,
                 mode: CupertinoDatePickerMode.date,
                 onDateTimeChanged: (DateTime date) {
                   setState(() {
